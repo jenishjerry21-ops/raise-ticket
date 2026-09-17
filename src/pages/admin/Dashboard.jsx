@@ -104,28 +104,18 @@ export default function Dashboard() {
                   <th>Priority</th>
                   <th>Status</th>
                   <th>Created</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {tickets.map((ticket) => (
                   <tr key={ticket.id}>
-                    <td>
-                      <Link to={`/admin/tickets/${ticket.id}`} className="table__link">
-                        {getReference(ticket) || "—"}
-                      </Link>
-                    </td>
+                    <td>{getReference(ticket) || "—"}</td>
                     <td className="table__truncate">{ticket.subject}</td>
                     <td>{ticket.email}</td>
                     <td>{ticket.category}</td>
                     <td><PriorityBadge priority={ticket.priority} /></td>
                     <td><StatusBadge status={ticket.status} /></td>
                     <td>{formatApiDate(ticket.created_at || ticket.createdAt)}</td>
-                    <td>
-                      <Link to={`/admin/tickets/${ticket.id}`} className="btn btn--secondary">
-                        Edit
-                      </Link>
-                    </td>
                   </tr>
                 ))}
               </tbody>

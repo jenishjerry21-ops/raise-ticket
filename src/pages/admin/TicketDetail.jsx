@@ -13,7 +13,6 @@ import { formatApiDate } from "../../utils/date";
 export default function TicketDetail() {
   const { id } = useParams();
   const [ticket, setTicket] = useState(null);
-  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -36,8 +35,7 @@ export default function TicketDetail() {
       .then((data) => {       
         const t = data.ticket || data;
         setTicket(t);
-        setHistory(data.status_history || t.status_history || []);
-        setNewStatus(t.status);
+        setNewStatus(t.status === "InProgress" ? "In Progress" : t.status);
         setCategory(t.category);
         setPriority(t.priority);
       })
@@ -237,30 +235,6 @@ export default function TicketDetail() {
               Cancel
             </button>
             </form>
-          )}
-        </div>
-
-        <div className="card">
-          <h2>Status History</h2>
-          {history.length === 0 ? (
-            <p className="muted">No status changes recorded yet.</p>
-          ) : (
-            <ul className="timeline">
-              {history.map((h, idx) => (
-                <li key={h.id || idx} className="timeline__item">
-                  <div className="timeline__row">
-                    <StatusBadge status={h.previous_status} />
-                    <span className="timeline__arrow">→</span>
-                    <StatusBadge status={h.new_status} />
-                  </div>
-                  {h.remark && <p className="timeline__remark">{h.remark}</p>}
-                  <p className="timeline__meta">
-                    {h.admin_name || h.admin_user || h.adminName || "Admin"} ·{" "}
-                    {formatApiDate(h.created_at || h.createdAt || h.CreatedAt)}
-                  </p>
-                </li>
-              ))}
-            </ul>
           )}
         </div>
       </div>

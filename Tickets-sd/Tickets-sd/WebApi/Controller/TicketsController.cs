@@ -151,7 +151,8 @@ public class TicketsController : ControllerBase
         if (ticket == null)
             return NotFound(new { message = "Ticket not found." });
 
-        if (!Enum.TryParse<TicketStatus>(model.Status, true, out var newStatus))
+        var statusText = model.Status.Replace(" ", "", StringComparison.Ordinal);
+        if (!Enum.TryParse<TicketStatus>(statusText, true, out var newStatus))
         {
             return UnprocessableEntity(new { message = "Invalid status." });
         }

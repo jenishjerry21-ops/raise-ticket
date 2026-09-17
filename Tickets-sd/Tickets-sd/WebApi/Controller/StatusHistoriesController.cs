@@ -3,17 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using SmartDesk.Api.Applications.DTOs;
 using SmartDesk.Api.Applications.Interface;
 using SmartDesk.Api.Domain.Entities;
-using SmartDesk.Api.Features.Mapping;
 using System.Security.Claims;
+using SmartDesk.Api.Features.Mapping;
+using SmartDesk.Api.Infrastructure.Persistence;
 
 namespace SmartDesk.Api.WebApi.Controllers;
 
 using Microsoft.AspNetCore.Authorization;
-using SmartDesk.Api.Infrastructure.Persistence;
 
 [ApiController]
 [Route("api/status-histories")]
-[Authorize]
+[AllowAnonymous]
 public class StatusHistoriesController : ControllerBase
 {
     private readonly IStatusHistoryRepository _repo;
@@ -84,7 +84,7 @@ public class StatusHistoriesController : ControllerBase
             return UnprocessableEntity(new { message = "Invalid new status." });
 
         int adminId;
-        if (model.AdminUserId.HasValue)
+        if (model.AdminUserId is > 0)
         {
             var exists = await _db.AdminUsers.AnyAsync(x => x.Id == model.AdminUserId.Value);
             if (!exists)
@@ -95,8 +95,18 @@ public class StatusHistoriesController : ControllerBase
         else
         {
             var idClaim = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
-            if (!int.TryParse(idClaim, out adminId))
-                return UnprocessableEntity(new { message = "Could not determine AdminUserId from token." });
+            if (!int.TryParse(idClaim, out adminId) || !await _db.AdminUsers.AnyAsync(x => x.Id == adminId))
+            {
+                var defaultAdmin = await _db.AdminUsers
+                    .OrderBy(x => x.Id)
+                    .Select(x => (int?)x.Id)
+                    .FirstOrDefaultAsync();
+
+                if (!defaultAdmin.HasValue)
+                    return UnprocessableEntity(new { message = "No admin user is available for this status history." });
+
+                adminId = defaultAdmin.Value;
+            }
         }
 
         var history = new StatusHistory

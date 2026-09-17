@@ -111,7 +111,7 @@ export default function Dashboard() {
                   <tr key={ticket.id}>
                     <td>
                       <Link to={`/admin/tickets/${ticket.id}`} className="table__link">
-                        {ticket.reference_number || ticket.reference || "—"}
+                        {getReference(ticket) || "—"}
                       </Link>
                     </td>
                     <td className="table__truncate">{ticket.subject}</td>
@@ -119,7 +119,7 @@ export default function Dashboard() {
                     <td>{ticket.category}</td>
                     <td><PriorityBadge priority={ticket.priority} /></td>
                     <td><StatusBadge status={ticket.status} /></td>
-                    <td>{ticket.created_at ? new Date(ticket.created_at).toLocaleDateString() : "—"}</td>
+                    <td>{formatDate(ticket.created_at || ticket.createdAt)}</td>
                     <td>
                       <Link to={`/admin/tickets/${ticket.id}`} className="btn btn--secondary">
                         Edit
@@ -176,4 +176,18 @@ function countRecentTickets(tickets) {
     const createdAt = ticket.created_at || ticket.createdAt;
     return createdAt && new Date(createdAt).getTime() >= cutoff;
   }).length;
+}
+
+function getReference(ticket) {
+  return (
+    ticket.reference_number ||
+    ticket.referenceNumber ||
+    ticket.reference ||
+    ticket.ticket_number ||
+    ticket.ticketNumber
+  );
+}
+
+function formatDate(value) {
+  return value ? new Date(value).toLocaleDateString() : "—";
 }

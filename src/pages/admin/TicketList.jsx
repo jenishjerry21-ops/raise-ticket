@@ -145,7 +145,7 @@ export default function TicketList() {
                   <tr key={t.id}>
                     <td>
                       <Link to={`/admin/tickets/${t.id}`} className="table__link">
-                        {t.reference_number}
+                        {getReference(t) || "—"}
                       </Link>
                     </td>
                     <td className="table__truncate">{t.subject}</td>
@@ -153,7 +153,7 @@ export default function TicketList() {
                     <td>{t.category}</td>
                     <td><PriorityBadge priority={t.priority} /></td>
                     <td><StatusBadge status={t.status} /></td>
-                    <td>{t.created_at ? new Date(t.created_at).toLocaleDateString() : "—"}</td>
+                    <td>{formatDate(t.created_at || t.createdAt)}</td>
                     <td>
                       <Link to={`/admin/tickets/${t.id}`} className="btn btn--secondary">
                         Edit
@@ -170,4 +170,18 @@ export default function TicketList() {
       )}
     </div>
   );
+}
+
+function getReference(ticket) {
+  return (
+    ticket.reference_number ||
+    ticket.referenceNumber ||
+    ticket.reference ||
+    ticket.ticket_number ||
+    ticket.ticketNumber
+  );
+}
+
+function formatDate(value) {
+  return value ? new Date(value).toLocaleDateString() : "—";
 }

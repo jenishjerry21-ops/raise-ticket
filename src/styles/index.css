@@ -53,7 +53,7 @@ h3 {
   font-size: 0.85rem;
 }
 
-/* Navbar */
+
 .navbar {
   background: var(--color-primary);
   color: white;
@@ -103,7 +103,7 @@ h3 {
   font-size: 0.9rem;
 }
 
-/* Layout */
+
 .app-main {
   max-width: 1100px;
   margin: 0 auto;
@@ -137,7 +137,7 @@ h3 {
   }
 }
 
-/* Card */
+
 .card {
   background: var(--color-card);
   border: 1px solid var(--color-border);
@@ -151,7 +151,7 @@ h3 {
   text-align: center;
 }
 
-/* Forms */
+
 .form-group {
   margin-bottom: 1rem;
 }
@@ -194,7 +194,7 @@ textarea.input {
   margin-top: 0.3rem;
 }
 
-/* Buttons */
+
 .btn {
   display: inline-block;
   border: none;
@@ -239,7 +239,7 @@ textarea.input {
   background: #f0f2f7;
 }
 
-/* Alerts */
+
 .alert {
   padding: 0.75rem 1rem;
   border-radius: 8px;
@@ -259,7 +259,7 @@ textarea.input {
   border: 1px solid #bfe8cf;
 }
 
-/* Confirmation */
+
 .confirmation__icon {
   width: 56px;
   height: 56px;
@@ -282,7 +282,6 @@ textarea.input {
   margin: 1rem 0;
 }
 
-/* Badges */
 .badge {
   display: inline-block;
   padding: 0.2rem 0.6rem;
@@ -299,7 +298,6 @@ textarea.input {
   gap: 0.5rem;
 }
 
-/* Loader */
 .loader {
   display: flex;
   align-items: center;
@@ -324,7 +322,6 @@ textarea.input {
   }
 }
 
-/* Filter bar */
 .filter-bar__search {
   display: flex;
   gap: 0.5rem;
@@ -347,7 +344,6 @@ textarea.input {
   min-width: 140px;
 }
 
-/* Table */
 .table-wrap {
   overflow-x: auto;
   padding: 0;
@@ -387,7 +383,6 @@ textarea.input {
   text-overflow: ellipsis;
 }
 
-/* Pagination */
 .pagination {
   display: flex;
   align-items: center;
@@ -417,7 +412,6 @@ textarea.input {
   padding: 0 0.3rem;
 }
 
-/* Dashboard */
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -483,7 +477,6 @@ textarea.input {
   border-radius: 999px;
 }
 
-/* Ticket detail */
 .back-link {
   display: inline-block;
   margin-bottom: 0.75rem;

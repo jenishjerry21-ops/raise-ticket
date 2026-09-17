@@ -41,11 +41,11 @@ export default function RaiseTicket() {
     setSubmitting(true);
     try {
       const data = await createTicket(form);
-      // Expected shape: { reference_number: "TKT-00001", ... }
+      
       navigate("/confirmation", { state: { ticket: data.ticket || data.data || data } });
     } catch (err) {
       if (err.errors) {
-        // Map server-side field errors (422) onto the form.
+        
         const fieldErrors = {};
         Object.entries(err.errors).forEach(([field, messages]) => {
           fieldErrors[field] = Array.isArray(messages) ? messages[0] : messages;

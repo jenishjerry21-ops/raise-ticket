@@ -12,7 +12,6 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const data = await loginApi({ email, password });
-    // Expected shape: { token: "...", admin: { id, name, email } }
     localStorage.setItem("smartdesk_token", data.token);
     localStorage.setItem("smartdesk_admin", JSON.stringify(data.admin || {}));
     setToken(data.token);

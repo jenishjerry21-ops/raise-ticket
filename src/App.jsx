@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
-
 import RaiseTicket from "./pages/public/RaiseTicket";
 import TicketConfirmation from "./pages/public/TicketConfirmation";
 import Login from "./pages/admin/Login";

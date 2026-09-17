@@ -5,6 +5,7 @@ import { STATUS_OPTIONS, CATEGORY_OPTIONS, PRIORITY_OPTIONS } from "../../consta
 import { StatusBadge, PriorityBadge } from "../../components/StatusBadge";
 import Pagination from "../../components/Pagination";
 import Loader from "../../components/Loader";
+import { formatApiDate } from "../../utils/date";
 
 const PER_PAGE = 1000;
 
@@ -36,7 +37,6 @@ export default function TicketList() {
       pageSize: PER_PAGE,
     })
       .then((data) => {
-        // Expected shape: { data: [...], total, page, per_page }
         const rows = Array.isArray(data)
           ? data
           : data.data || data.tickets || data.results || data.items || [];
@@ -153,7 +153,7 @@ export default function TicketList() {
                     <td>{t.category}</td>
                     <td><PriorityBadge priority={t.priority} /></td>
                     <td><StatusBadge status={t.status} /></td>
-                    <td>{formatDate(t.created_at || t.createdAt)}</td>
+                    <td>{formatApiDate(t.created_at || t.createdAt)}</td>
                     <td>
                       <Link to={`/admin/tickets/${t.id}`} className="btn btn--secondary">
                         Edit
@@ -182,6 +182,3 @@ function getReference(ticket) {
   );
 }
 
-function formatDate(value) {
-  return value ? new Date(value).toLocaleDateString() : "—";
-}

@@ -3,6 +3,7 @@ import { getDashboardStats, getTickets } from "../../api/ticketApi";
 import { Link } from "react-router-dom";
 import { StatusBadge, PriorityBadge } from "../../components/StatusBadge";
 import Loader from "../../components/Loader";
+import { formatApiDate } from "../../utils/date";
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -119,7 +120,7 @@ export default function Dashboard() {
                     <td>{ticket.category}</td>
                     <td><PriorityBadge priority={ticket.priority} /></td>
                     <td><StatusBadge status={ticket.status} /></td>
-                    <td>{formatDate(ticket.created_at || ticket.createdAt)}</td>
+                    <td>{formatApiDate(ticket.created_at || ticket.createdAt)}</td>
                     <td>
                       <Link to={`/admin/tickets/${ticket.id}`} className="btn btn--secondary">
                         Edit
@@ -180,6 +181,3 @@ function getReference(ticket) {
   );
 }
 
-function formatDate(value) {
-  return value ? new Date(value).toLocaleDateString() : "—";
-}

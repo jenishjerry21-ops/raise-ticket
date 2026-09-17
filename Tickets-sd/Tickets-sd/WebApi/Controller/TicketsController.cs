@@ -174,7 +174,6 @@ public class TicketsController : ControllerBase
         return Ok(ticket.ToDto());
     }
 
-    [Authorize]
     [HttpPatch("{id:int}/classification")]
     public async Task<IActionResult> UpdateClassification(
         int id,

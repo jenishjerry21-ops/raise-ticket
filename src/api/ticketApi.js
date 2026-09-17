@@ -28,7 +28,7 @@ export const updateTicketStatus = (id, payload) => {
 // reuse the status endpoint or add this one. Kept here so the UI has a
 // single place to call — adjust the path if your backend differs.)
 export const updateTicketClassification = (id, payload) => {
-  return axiosClient.patch(`/tickets/${id}`, payload).then((res) => res.data);
+  return axiosClient.patch(`https://localhost:7193/api/tickets/${id}/classification`, payload).then((res) => res.data);
 };
 
 // GET /api/dashboard (token) -> counts by status/category/priority + last 7 days

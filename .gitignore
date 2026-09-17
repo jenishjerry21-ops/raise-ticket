@@ -11,6 +11,13 @@ node_modules
 dist
 dist-ssr
 *.local
+# .NET
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+**/.vs/
 
 # Editor directories and files
 .vscode/*

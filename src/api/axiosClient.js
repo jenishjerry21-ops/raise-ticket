@@ -11,7 +11,6 @@ const axiosClient = axios.create({
   timeout: 15000,
 });
 
-// Attach the bearer token (if present) to every outgoing request.
 axiosClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("smartdesk_token");
@@ -23,7 +22,6 @@ axiosClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Normalize error responses and handle expired/invalid sessions globally.
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -33,14 +31,12 @@ axiosClient.interceptors.response.use(
       if (status === 401) {
         localStorage.removeItem("smartdesk_token");
         localStorage.removeItem("smartdesk_admin");
-        // Avoid redirect loop if we're already on the login page.
+       
         if (!window.location.pathname.includes("/admin/login")) {
           window.location.href = "/admin/login";
         }
       }
-
-      // Shape a consistent error object for callers, whether the backend
-      // sends { message }, { error }, or { errors: { field: [...] } } (422).
+     
       const data = error.response.data || {};
       const normalized = {
         status,
@@ -61,5 +57,4 @@ axiosClient.interceptors.response.use(
     return Promise.reject({ status: -1, message: error.message, errors: null });
   }
 );
-
 export default axiosClient;

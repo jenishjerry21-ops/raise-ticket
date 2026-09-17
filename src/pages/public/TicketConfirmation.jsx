@@ -4,8 +4,6 @@ import { Link, Navigate, useLocation } from "react-router-dom";
 export default function TicketConfirmation() {
   const { state } = useLocation();
   const ticket = state?.ticket;
-
-  // Guard against direct navigation without a submitted ticket in state.
   if (!ticket) {
     return <Navigate to="/" replace />;
   }

@@ -8,6 +8,7 @@ import {
 import { STATUS_OPTIONS, CATEGORY_OPTIONS, PRIORITY_OPTIONS } from "../../constants";
 import { StatusBadge, PriorityBadge } from "../../components/StatusBadge";
 import Loader from "../../components/Loader";
+import { formatApiDate } from "../../utils/date";
 
 export default function TicketDetail() {
   const { id } = useParams();
@@ -16,14 +17,12 @@ export default function TicketDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Status update form
   const [newStatus, setNewStatus] = useState("");
   const [remark, setRemark] = useState("");
   const [editingStatus, setEditingStatus] = useState(false);
   const [statusSubmitting, setStatusSubmitting] = useState(false);
   const [statusError, setStatusError] = useState("");
 
-  // Category / priority override form
   const [category, setCategory] = useState("");
   const [priority, setPriority] = useState("");
   const [overrideSubmitting, setOverrideSubmitting] = useState(false);
@@ -34,8 +33,7 @@ export default function TicketDetail() {
     setLoading(true);
     setError("");
     getTicketById(id)
-      .then((data) => {
-        // Expected shape: { ticket: {...}, status_history: [...] }
+      .then((data) => {       
         const t = data.ticket || data;
         setTicket(t);
         setHistory(data.status_history || t.status_history || []);
@@ -94,6 +92,8 @@ export default function TicketDetail() {
   if (error) return <div className="alert alert--error">{error}</div>;
   if (!ticket) return null;
 
+  const createdAt = ticket.created_at || ticket.createdAt || ticket.CreatedAt;
+
   return (
     <div className="page">
       <Link to="/admin/tickets" className="back-link">← Back to Tickets</Link>
@@ -119,7 +119,7 @@ export default function TicketDetail() {
             <dt>Description</dt>
             <dd className="detail-list__pre">{ticket.description}</dd>
             <dt>Created</dt>
-            <dd>{ticket.created_at ? new Date(ticket.created_at).toLocaleString() : "—"}</dd>
+            <dd>{formatApiDate(createdAt)}</dd>
           </dl>
         </div>
 
@@ -255,8 +255,8 @@ export default function TicketDetail() {
                   </div>
                   {h.remark && <p className="timeline__remark">{h.remark}</p>}
                   <p className="timeline__meta">
-                    {h.admin_name || h.admin_user || "Admin"} ·{" "}
-                    {h.created_at ? new Date(h.created_at).toLocaleString() : ""}
+                    {h.admin_name || h.admin_user || h.adminName || "Admin"} ·{" "}
+                    {formatApiDate(h.created_at || h.createdAt || h.CreatedAt)}
                   </p>
                 </li>
               ))}

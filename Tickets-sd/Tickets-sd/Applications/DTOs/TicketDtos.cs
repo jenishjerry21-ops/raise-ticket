@@ -54,11 +54,29 @@ public class TicketDto
 public class StatusHistoryDto
 {
     public int Id { get; set; }
+    public int TicketId { get; set; }
     public string PreviousStatus { get; set; } = "";
     public string NewStatus { get; set; } = "";
     public string Remark { get; set; } = "";
+    public int AdminUserId { get; set; }
     public string AdminName { get; set; } = "";
     public DateTime CreatedAt { get; set; }
+}
+
+public class CreateStatusHistoryDto
+{
+    public int TicketId { get; set; }
+    public string PreviousStatus { get; set; } = "";
+    public string NewStatus { get; set; } = "";
+    public string Remark { get; set; } = "";
+    public int? AdminUserId { get; set; }
+}
+
+public class UpdateStatusHistoryDto
+{
+    public string PreviousStatus { get; set; } = "";
+    public string NewStatus { get; set; } = "";
+    public string Remark { get; set; } = "";
 }
 
 public class TicketDetailsDto

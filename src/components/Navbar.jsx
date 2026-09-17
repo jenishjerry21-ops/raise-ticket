@@ -23,6 +23,7 @@ export default function Navbar() {
             <>
               <Link to="/admin/dashboard">Dashboard</Link>
               <Link to="/admin/tickets">Tickets</Link>
+              <Link to="/admin/status-history">Status History</Link>
               <span className="navbar__admin">{admin?.name || admin?.email}</span>
               <button className="btn btn--ghost" onClick={handleLogout}>
                 Logout

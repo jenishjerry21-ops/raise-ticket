@@ -9,6 +9,7 @@ import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import TicketList from "./pages/admin/TicketList";
 import TicketDetail from "./pages/admin/TicketDetail";
+import StatusHistory from "./pages/admin/StatusHistory";
 
 export default function App() {
   return (
@@ -44,6 +45,14 @@ export default function App() {
               element={
                 <PrivateRoute>
                   <TicketDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/status-history"
+              element={
+                <PrivateRoute>
+                  <StatusHistory />
                 </PrivateRoute>
               }
             />

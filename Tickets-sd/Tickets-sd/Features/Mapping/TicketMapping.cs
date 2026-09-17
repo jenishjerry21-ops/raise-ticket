@@ -29,9 +29,11 @@ public static class TicketMapping
         return new StatusHistoryDto
         {
             Id = history.Id,
+            TicketId = history.TicketId,
             PreviousStatus = history.PreviousStatus.ToString(),
             NewStatus = history.NewStatus.ToString(),
             Remark = history.Remark,
+            AdminUserId = history.AdminUserId,
             AdminName = history.AdminUser?.Name ?? "Admin",
             CreatedAt = history.CreatedAt
         };

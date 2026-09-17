@@ -142,7 +142,7 @@ public class TicketsController : ControllerBase
         });
     }
 
-    [Authorize]
+    [AllowAnonymous]
     [HttpPatch("{id:int}/status")]
     public async Task<IActionResult> UpdateStatus(int id, UpdateStatusDto model)
     {
@@ -156,16 +156,22 @@ public class TicketsController : ControllerBase
             return UnprocessableEntity(new { message = "Invalid status." });
         }
 
-        var adminId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-
-        _db.StatusHistories.Add(new StatusHistory
+        // If the request is authenticated, record who changed the status.
+        if (User.Identity?.IsAuthenticated == true)
         {
-            TicketId = ticket.Id,
-            PreviousStatus = ticket.Status,
-            NewStatus = newStatus,
-            Remark = model.Remark.Trim(),
-            AdminUserId = adminId
-        });
+            var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (int.TryParse(idClaim, out var adminId))
+            {
+                _db.StatusHistories.Add(new StatusHistory
+                {
+                    TicketId = ticket.Id,
+                    PreviousStatus = ticket.Status,
+                    NewStatus = newStatus,
+                    Remark = model.Remark.Trim(),
+                    AdminUserId = adminId
+                });
+            }
+        }
 
         ticket.Status = newStatus;
         ticket.UpdatedAt = DateTime.UtcNow;

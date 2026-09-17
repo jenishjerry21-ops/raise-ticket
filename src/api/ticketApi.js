@@ -15,7 +15,14 @@ export const getTicketById = (id) => {
 };
 
 export const updateTicketStatus = (id, payload) => {
-  return axiosClient.patch(`/tickets/${id}/status`, payload).then((res) => res.data);
+  const normalizedPayload = {
+    ...payload,
+    status: payload.status === "In Progress" ? "InProgress" : payload.status,
+  };
+
+  return axiosClient
+    .patch(`https://localhost:7193/api/tickets/${id}/status`, normalizedPayload)
+    .then((res) => res.data);
 };
 
 export const updateTicketClassification = (id, payload) => {

@@ -140,8 +140,6 @@ function BreakdownList({ data }) {
   const entries = Object.entries(data);
   if (entries.length === 0) return <p className="muted">No data available.</p>;
 
-  const max = Math.max(...entries.map(([, v]) => v), 1);
-
   return (
     <ul className="breakdown-list">
       {entries.map(([label, value]) => (
@@ -149,12 +147,6 @@ function BreakdownList({ data }) {
           <div className="breakdown-list__row">
             <span>{label}</span>
             <span>{value}</span>
-          </div>
-          <div className="breakdown-list__bar">
-            <div
-              className="breakdown-list__bar-fill"
-              style={{ width: `${(value / max) * 100}%` }}
-            />
           </div>
         </li>
       ))}

@@ -1,0 +1,6 @@
+@Tickets_sd_HostAddress = http://localhost:5114
+
+GET {{Tickets_sd_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

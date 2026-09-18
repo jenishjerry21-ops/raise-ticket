@@ -13,7 +13,7 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("smartdesk_token");
+    const token = sessionStorage.getItem("smartdesk_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -29,8 +29,8 @@ axiosClient.interceptors.response.use(
       const { status } = error.response;
 
       if (status === 401) {
-        localStorage.removeItem("smartdesk_token");
-        localStorage.removeItem("smartdesk_admin");
+        sessionStorage.removeItem("smartdesk_token");
+        sessionStorage.removeItem("smartdesk_admin");
        
         if (!window.location.pathname.includes("/admin/login")) {
           window.location.href = "/admin/login";

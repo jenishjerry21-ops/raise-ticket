@@ -5,15 +5,15 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [admin, setAdmin] = useState(() => {
-    const stored = localStorage.getItem("smartdesk_admin");
+    const stored = sessionStorage.getItem("smartdesk_admin");
     return stored ? JSON.parse(stored) : null;
   });
-  const [token, setToken] = useState(() => localStorage.getItem("smartdesk_token"));
+  const [token, setToken] = useState(() => sessionStorage.getItem("smartdesk_token"));
 
   const login = useCallback(async (email, password) => {
     const data = await loginApi({ email, password });
-    localStorage.setItem("smartdesk_token", data.token);
-    localStorage.setItem("smartdesk_admin", JSON.stringify(data.admin || {}));
+    sessionStorage.setItem("smartdesk_token", data.token);
+    sessionStorage.setItem("smartdesk_admin", JSON.stringify(data.admin || {}));
     setToken(data.token);
     setAdmin(data.admin || {});
     return data;

@@ -63,8 +63,7 @@ h3 {
 }
 
 .navbar__inner {
-  max-width: 1100px;
-  margin: 0 auto;
+  width: 100%;
   padding: 0.9rem 1.25rem;
   display: flex;
   align-items: center;
@@ -254,6 +253,10 @@ textarea.input {
 
 .btn--primary:hover:not(:disabled) {
   background: var(--color-primary-dark);
+}
+
+.ticket-detail__edit {
+  margin-top: 0.75rem;
 }
 
 .btn--secondary {

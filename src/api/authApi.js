@@ -5,6 +5,6 @@ export const login = (credentials) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("smartdesk_token");
-  localStorage.removeItem("smartdesk_admin");
+  sessionStorage.removeItem("smartdesk_token");
+  sessionStorage.removeItem("smartdesk_admin");
 };

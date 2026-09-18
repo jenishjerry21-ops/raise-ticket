@@ -20,6 +20,7 @@ export default function TicketDetail() {
   const [editingStatus, setEditingStatus] = useState(false);
   const [statusSubmitting, setStatusSubmitting] = useState(false);
   const [statusError, setStatusError] = useState("");
+  const [statusSuccess, setStatusSuccess] = useState("");
 
   const [category, setCategory] = useState("");
   const [priority, setPriority] = useState("");
@@ -48,6 +49,7 @@ export default function TicketDetail() {
   const handleStatusSubmit = async (e) => {
     e.preventDefault();
     setStatusError("");
+    setStatusSuccess("");
 
     if (!remark.trim()) {
       setStatusError("A remark is required when updating status.");
@@ -57,6 +59,7 @@ export default function TicketDetail() {
     setStatusSubmitting(true);
     try {
       await updateTicketStatus(id, { status: newStatus, remark: remark.trim() });
+      setStatusSuccess("Status history saved successfully.");
       setRemark("");
       setEditingStatus(false);
       load();
@@ -107,6 +110,8 @@ export default function TicketDetail() {
         <h1>{referenceNumber || "Ticket Details"}</h1>
       </div>
 
+      {statusSuccess && <div className="alert alert--success">{statusSuccess}</div>}
+
       <div className="grid-two">
         <div className="card">
           <h2>Ticket Details</h2>
@@ -124,7 +129,7 @@ export default function TicketDetail() {
           </dl>
           <button
             type="button"
-            className="btn btn--primary"
+            className="btn btn--primary ticket-detail__edit"
             onClick={() => setEditingStatus(true)}
           >
             Edit
@@ -205,10 +210,11 @@ export default function TicketDetail() {
               </button>
             </div>
             {statusError && <div className="alert alert--error">{statusError}</div>}
+            {statusSuccess && <div className="alert alert--success">{statusSuccess}</div>}
             <form onSubmit={handleStatusSubmit}>
             <div className="form-group">
               <label htmlFor="previousStatus">Previous Status</label>
-              <select id="previousStatus" className="input" value={ticket.status} disabled>
+              <select id="previousStatus" className="input" value={ticket.status}>
                 {STATUS_OPTIONS.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
@@ -249,6 +255,7 @@ export default function TicketDetail() {
                 setNewStatus(ticket.status);
                 setRemark("");
                 setStatusError("");
+                setStatusSuccess("");
               }}
             >
               Cancel

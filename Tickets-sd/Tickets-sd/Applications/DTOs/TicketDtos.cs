@@ -46,6 +46,8 @@ public class TicketDto
     public string Status { get; set; } = "";
     public string Category { get; set; } = "";
     public string Priority { get; set; } = "";
+    public string AiCategory { get; set; } = "";
+    public string AiPriority { get; set; } = "";
     public string AiSummary { get; set; } = "";
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

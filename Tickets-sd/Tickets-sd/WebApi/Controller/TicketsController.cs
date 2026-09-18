@@ -17,15 +17,18 @@ public class TicketsController : ControllerBase
     private readonly ITicketRepository _ticketRepository;
     private readonly IAiService _aiService;
     private readonly AppDbContext _db;
+    private readonly ILogger<TicketsController> _logger;
 
     public TicketsController(
         ITicketRepository ticketRepository,
         IAiService aiService,
-        AppDbContext db)
+        AppDbContext db,
+        ILogger<TicketsController> logger)
     {
         _ticketRepository = ticketRepository;
         _aiService = aiService;
         _db = db;
+        _logger = logger;
     }
 
     [HttpPost]
@@ -50,13 +53,32 @@ public class TicketsController : ControllerBase
 
         var aiResult = await _aiService.ClassifyTicketAsync(
             ticket.Subject,
-            ticket.Description);
+            ticket.Description,
+            HttpContext.RequestAborted);
 
-        if (aiResult != null)
+        var category = TicketCategory.General;
+        var priority = TicketPriority.Medium;
+        var aiApplied = aiResult != null &&
+            Enum.TryParse<TicketCategory>(aiResult.Category, true, out category) &&
+            Enum.TryParse<TicketPriority>(aiResult.Priority, true, out priority) &&
+            !string.IsNullOrWhiteSpace(aiResult.Summary);
+
+        if (aiApplied)
         {
-            ticket.Category = Enum.Parse<TicketCategory>(aiResult.Category, true);
-            ticket.Priority = Enum.Parse<TicketPriority>(aiResult.Priority, true);
-            ticket.AiSummary = aiResult.Summary;
+            ticket.Category = category;
+            ticket.Priority = priority;
+            ticket.AiSummary = aiResult.Summary.Trim();
+        }
+        else
+        {
+            ticket.Category = TicketCategory.General;
+            ticket.Priority = TicketPriority.Medium;
+            ticket.AiSummary = "AI classification failed. Default classification was applied.";
+            _logger.LogWarning(
+                "AI classification failed for ticket {ReferenceNumber}; using Category={Category}, Priority={Priority}",
+                ticket.ReferenceNumber,
+                ticket.Category,
+                ticket.Priority);
         }
 
         ticket.UpdatedAt = DateTime.UtcNow;
@@ -157,7 +179,7 @@ public class TicketsController : ControllerBase
             return UnprocessableEntity(new { message = "Invalid status." });
         }
 
-        // If the request is authenticated, record who changed the status.
+       
         if (User.Identity?.IsAuthenticated == true)
         {
             var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);

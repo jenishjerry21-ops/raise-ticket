@@ -7,7 +7,7 @@ import Pagination from "../../components/Pagination";
 import Loader from "../../components/Loader";
 import { formatApiDate } from "../../utils/date";
 
-const PER_PAGE = 1000;
+const PER_PAGE = 10;
 
 export default function TicketList() {
   const [tickets, setTickets] = useState([]);
@@ -156,7 +156,7 @@ export default function TicketList() {
                     <td>{formatApiDate(t.created_at || t.createdAt)}</td>
                     <td>
                       <Link to={`/admin/tickets/${t.id}`} className="btn btn--secondary">
-                        Edit
+                        View
                       </Link>
                     </td>
                   </tr>

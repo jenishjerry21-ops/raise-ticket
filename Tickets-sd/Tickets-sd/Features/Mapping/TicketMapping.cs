@@ -18,6 +18,8 @@ public static class TicketMapping
             Status = ticket.Status.ToString(),
             Category = ticket.Category.ToString(),
             Priority = ticket.Priority.ToString(),
+            AiCategory = ticket.Category.ToString(),
+            AiPriority = ticket.Priority.ToString(),
             AiSummary = ticket.AiSummary,
             CreatedAt = ticket.CreatedAt,
             UpdatedAt = ticket.UpdatedAt

@@ -1,13 +1,11 @@
-namespace SmartDesk.Api.Applications.Interface;
+using SmartDesk.Api.Applications.DTOs;
 
-public class AiResult
-{
-    public string Category { get; set; } = "General";
-    public string Priority { get; set; } = "Medium";
-    public string Summary { get; set; } = "";
-}
+namespace SmartDesk.Api.Applications.Interface;
 
 public interface IAiService
 {
-    Task<AiResult?> ClassifyTicketAsync(string subject, string description);
+    Task<AiClassificationResponse?> ClassifyTicketAsync(
+        string subject,
+        string description,
+        CancellationToken cancellationToken = default);
 }

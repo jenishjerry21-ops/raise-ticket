@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { getDashboardStats, getTickets } from "../../api/ticketApi";
-import { Link } from "react-router-dom";
 import { StatusBadge, PriorityBadge } from "../../components/StatusBadge";
 import Loader from "../../components/Loader";
 import { formatApiDate } from "../../utils/date";
@@ -86,7 +85,6 @@ export default function Dashboard() {
       <div className="card">
         <div className="page__header">
           <h2>All Raised Tickets</h2>
-          <Link to="/admin/tickets" className="btn btn--secondary">View Tickets</Link>
         </div>
         {ticketError ? (
           <p className="alert alert--error">{ticketError}</p>

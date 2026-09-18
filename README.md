@@ -4,7 +4,7 @@ A full-stack ticket management application built with **React** and **ASP.NET Co
 
 ---
 
-## 📌 Project Overview
+##  Project Overview
 
 The project contains two applications in the same GitHub repository:
 
@@ -36,7 +36,7 @@ SQL Server
 
 ---
 
-# 🚀 Features
+#  Features
 
 ### Authentication & Security
 
@@ -85,7 +85,7 @@ SQL Server
 
 ---
 
-# 🛠️ Technology Stack
+#  Technology Stack
 
 | Area | Technology |
 |---|---|
@@ -105,7 +105,7 @@ SQL Server
 
 ---
 
-# 📂 Repository Structure
+#  Repository Structure
 
 ```text
 raise-ticket/
@@ -133,7 +133,7 @@ raise-ticket/
 
 ---
 
-# 💻 Prerequisites
+#  Prerequisites
 
 Install the following before running the project:
 
@@ -158,7 +158,7 @@ The backend project targets **.NET 10**.
 
 ---
 
-# 📥 1. Clone the Repository
+#  1. Clone the Repository
 
 Open PowerShell, Command Prompt, or a terminal:
 
@@ -174,7 +174,7 @@ cd raise-ticket
 
 ---
 
-# 🗄️ 2. Database Configuration
+#  2. Database Configuration
 
 The backend uses **SQL Server** through Entity Framework Core.
 
@@ -218,7 +218,7 @@ Use the connection string appropriate for the client's SQL Server configuration.
 
 ---
 
-# 🔐 3. JWT Configuration
+#  3. JWT Configuration
 
 The backend uses JWT Bearer authentication.
 
@@ -249,7 +249,7 @@ Never commit a real JWT secret to GitHub.
 
 ---
 
-# 🤖 4. OpenAI / AI Configuration
+#  4. OpenAI / AI Configuration
 
 The backend contains an AI service and uses the following configuration:
 
@@ -296,7 +296,7 @@ The API key should be stored only in local/secure configuration.
 
 ---
 
-# 🔄 5. Database Migration
+#  5. Database Migration
 
 The backend is configured to apply Entity Framework Core migrations automatically when the application starts.
 
@@ -322,7 +322,7 @@ The application also performs the database migration during startup.
 
 ---
 
-# 👤 6. Admin Seeding
+#  6. Admin Seeding
 
 During backend startup, the application runs the database migration and invokes the admin seeding process.
 
@@ -334,7 +334,7 @@ If the application has an existing admin-login flow, use the credentials provide
 
 ---
 
-# ⚙️ 7. Backend Setup
+#  7. Backend Setup
 
 Open a terminal inside the backend folder:
 
@@ -374,7 +374,7 @@ Use the exact port shown in your terminal.
 
 ---
 
-# 📖 8. Swagger API Documentation
+#  8. Swagger API Documentation
 
 Swagger/OpenAPI is enabled in the backend.
 
@@ -403,7 +403,7 @@ Bearer <JWT_TOKEN>
 
 ---
 
-# 🎨 9. Frontend Setup
+#  9. Frontend Setup
 
 Open a new terminal from the repository root:
 
@@ -435,7 +435,7 @@ Use the exact URL shown by Vite.
 
 ---
 
-# 🔗 10. Frontend ↔ Backend API Configuration
+#  10. Frontend ↔ Backend API Configuration
 
 The React frontend must use the URL of the running ASP.NET Core API.
 
@@ -455,7 +455,7 @@ If an `.env` file is used, add it to `.gitignore`.
 
 ---
 
-# ▶️ 11. Run the Complete Application
+#  11. Run the Complete Application
 
 Run the backend and frontend in separate terminals.
 
@@ -482,7 +482,7 @@ Open the frontend URL displayed by Vite.
 
 ---
 
-# 🔁 Recommended Startup Order
+#  Recommended Startup Order
 
 For a new laptop:
 
@@ -514,7 +514,7 @@ For a new laptop:
 
 ---
 
-# 🔐 Configuration Summary
+#  Configuration Summary
 
 | Configuration | Location/Key | Required |
 |---|---|---|
@@ -528,7 +528,7 @@ For a new laptop:
 
 ---
 
-# 🚫 13. Do Not Commit Secrets
+#  13. Do Not Commit Secrets
 
 Never commit these values to a public GitHub repository:
 
@@ -552,7 +552,7 @@ for sensitive configuration.
 
 ---
 
-# 🧹 14. Files That Should Not Be Pushed
+#  14. Files That Should Not Be Pushed
 
 The following generated/local files should normally remain outside Git:
 
@@ -590,7 +590,7 @@ dist/
 
 ---
 
-# 🧪 15. Application Testing Checklist
+#  15. Application Testing Checklist
 
 After starting the application, verify:
 
@@ -630,7 +630,7 @@ If AI is enabled:
 
 ---
 
-# 🐛 16. Troubleshooting
+#  16. Troubleshooting
 
 ## Frontend does not start
 
@@ -739,7 +739,7 @@ Make sure the OpenAI API key is valid and is available to the backend process.
 
 ---
 
-# 📦 17. Frontend Commands
+#  17. Frontend Commands
 
 From the repository root:
 
@@ -773,7 +773,7 @@ npm run preview
 
 ---
 
-# ⚙️ 18. Backend Commands
+#  18. Backend Commands
 
 From `Tickets-sd`:
 
@@ -797,7 +797,7 @@ dotnet tool install --global dotnet-ef
 
 ---
 
-# 🔄 19. Git Workflow
+#  19. Git Workflow
 
 Use meaningful commits while developing.
 
@@ -832,7 +832,7 @@ final project
 
 ---
 
-# 🔒 20. Production Security Notes
+#  20. Production Security Notes
 
 Before production deployment:
 
@@ -848,7 +848,7 @@ Before production deployment:
 
 ---
 
-# 📸 21. Screenshots
+#  21. Screenshots
 
 Add screenshots of the application here if required.
 
@@ -874,7 +874,7 @@ Example Markdown:
 
 ---
 
-# 📄 22. License
+#  22. License
 
 This project is provided for project/assignment/client use.
 
@@ -882,7 +882,7 @@ Add a formal open-source license if one is required for the project.
 
 ---
 
-# 👤 Author
+#  Author
 
 **Jenish S**
 
@@ -896,7 +896,7 @@ https://github.com/jenishjerry21-ops/raise-ticket
 
 ---
 
-# ✅ Client Quick Start
+#  Client Quick Start
 
 For a client setting up the project on a new laptop:
 
@@ -936,7 +936,7 @@ Then open the frontend URL shown by Vite.
 
 ---
 
-## ⚠️ Important
+##  Important
 
 The GitHub repository should contain **source code and safe example configuration only**.
 

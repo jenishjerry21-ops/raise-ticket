@@ -6,7 +6,6 @@ import {
   updateTicketClassification,
 } from "../../api/ticketApi";
 import { STATUS_OPTIONS, CATEGORY_OPTIONS, PRIORITY_OPTIONS } from "../../constants";
-import { StatusBadge, PriorityBadge } from "../../components/StatusBadge";
 import Loader from "../../components/Loader";
 import { formatApiDate } from "../../utils/date";
 
@@ -27,7 +26,6 @@ export default function TicketDetail() {
   const [overrideSubmitting, setOverrideSubmitting] = useState(false);
   const [overrideError, setOverrideError] = useState("");
   const [overrideSuccess, setOverrideSuccess] = useState("");
-
   const load = useCallback(() => {
     setLoading(true);
     setError("");
@@ -91,17 +89,22 @@ export default function TicketDetail() {
   if (!ticket) return null;
 
   const createdAt = ticket.created_at || ticket.createdAt || ticket.CreatedAt;
+  const aiSummary = ticket.ai_summary || ticket.aiSummary || ticket.AiSummary;
+  const aiCategory = ticket.ai_category || ticket.aiCategory || ticket.AiCategory || ticket.category;
+  const aiPriority = ticket.ai_priority || ticket.aiPriority || ticket.AiPriority || ticket.priority;
+  const referenceNumber =
+    ticket.reference_number ||
+    ticket.referenceNumber ||
+    ticket.reference ||
+    ticket.ticket_number ||
+    ticket.ticketNumber;
 
   return (
     <div className="page">
       <Link to="/admin/tickets" className="back-link">← Back to Tickets</Link>
 
       <div className="page__header">
-        <h1>{ticket.reference_number}</h1>
-        <div className="badge-row">
-          <StatusBadge status={ticket.status} />
-          <PriorityBadge priority={ticket.priority} />
-        </div>
+        <h1>{referenceNumber || "Ticket Details"}</h1>
       </div>
 
       <div className="grid-two">
@@ -109,28 +112,35 @@ export default function TicketDetail() {
           <h2>Ticket Details</h2>
           <dl className="detail-list">
             <dt>Subject</dt>
-            <dd>{ticket.subject}</dd>
+            <dd>{ticket.subject || "—"}</dd>
             <dt>Customer</dt>
-            <dd>{ticket.name} ({ticket.email})</dd>
+            <dd>{ticket.name || "—"} ({ticket.email || "—"})</dd>
             <dt>Category</dt>
-            <dd>{ticket.category}</dd>
+            <dd>{ticket.category || "—"}</dd>
             <dt>Description</dt>
-            <dd className="detail-list__pre">{ticket.description}</dd>
+            <dd className="detail-list__pre">{ticket.description || "—"}</dd>
             <dt>Created</dt>
             <dd>{formatApiDate(createdAt)}</dd>
           </dl>
+          <button
+            type="button"
+            className="btn btn--primary"
+            onClick={() => setEditingStatus(true)}
+          >
+            Edit
+          </button>
         </div>
 
         <div className="card">
           <h2>AI Suggestion</h2>
-          {ticket.ai_summary || ticket.ai_category || ticket.ai_priority ? (
+          {aiSummary || aiCategory || aiPriority ? (
             <dl className="detail-list">
               <dt>Suggested Category</dt>
-              <dd>{ticket.ai_category || "—"}</dd>
+              <dd>{aiCategory || "—"}</dd>
               <dt>Suggested Priority</dt>
-              <dd>{ticket.ai_priority || "—"}</dd>
+              <dd>{aiPriority || "—"}</dd>
               <dt>Summary</dt>
-              <dd className="detail-list__pre">{ticket.ai_summary || "—"}</dd>
+              <dd className="detail-list__pre">{aiSummary || "—"}</dd>
             </dl>
           ) : (
             <p className="muted">
@@ -178,23 +188,32 @@ export default function TicketDetail() {
         </div>
       </div>
 
-      <div className="grid-two">
-        <div className="card">
-          <h2>Update Status</h2>
-          {statusError && <div className="alert alert--error">{statusError}</div>}
-          {!editingStatus ? (
-            <>
-              <p className="muted">Current status: <StatusBadge status={ticket.status} /></p>
+      {editingStatus && (
+        <div className="modal-backdrop" role="presentation" onMouseDown={(e) => {
+          if (e.target === e.currentTarget) setEditingStatus(false);
+        }}>
+          <div className="modal card" role="dialog" aria-modal="true" aria-labelledby="status-history-title">
+            <div className="modal__header">
+              <h2 id="status-history-title">Save Status History</h2>
               <button
                 type="button"
-                className="btn btn--primary"
-                onClick={() => setEditingStatus(true)}
+                className="modal__close"
+                aria-label="Close status history dialog"
+                onClick={() => setEditingStatus(false)}
               >
-                Edit Status
+                ×
               </button>
-            </>
-          ) : (
+            </div>
+            {statusError && <div className="alert alert--error">{statusError}</div>}
             <form onSubmit={handleStatusSubmit}>
+            <div className="form-group">
+              <label htmlFor="previousStatus">Previous Status</label>
+              <select id="previousStatus" className="input" value={ticket.status} disabled>
+                {STATUS_OPTIONS.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
             <div className="form-group">
               <label htmlFor="status">New Status</label>
               <select
@@ -220,7 +239,7 @@ export default function TicketDetail() {
               />
             </div>
             <button type="submit" className="btn btn--primary" disabled={statusSubmitting}>
-              {statusSubmitting ? "Updating…" : "Update Status"}
+              {statusSubmitting ? "Saving…" : "Save Status History"}
             </button>
             <button
               type="button"
@@ -235,9 +254,9 @@ export default function TicketDetail() {
               Cancel
             </button>
             </form>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

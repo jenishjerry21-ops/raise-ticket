@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using SmartDesk.Api.Applications.DTOs;
 using SmartDesk.Api.Applications.Interface;
 using SmartDesk.Api.Domain.Entities;
 
@@ -19,21 +20,33 @@ public class AiService : IAiService
         _logger = logger;
     }
 
-    public async Task<AiResult?> ClassifyTicketAsync(string subject, string description)
+    public async Task<AiClassificationResponse?> ClassifyTicketAsync(
+        string subject,
+        string description,
+        CancellationToken cancellationToken = default)
     {
-        // AI is optional. If it is not configured, the ticket keeps the defaults.
         if (!_configuration.GetValue<bool>("AI:Enabled"))
-            return null;
+        {
+            _logger.LogInformation("AI is disabled; using local ticket classification.");
+            return CreateFallbackClassification(subject, description);
+        }
 
         var apiKey = _configuration["AI:ApiKey"];
         if (string.IsNullOrWhiteSpace(apiKey))
-            return null;
+        {
+            _logger.LogWarning("AI API key is missing; using local ticket classification.");
+            return CreateFallbackClassification(subject, description);
+        }
 
         try
         {
             var client = _httpClientFactory.CreateClient();
             client.Timeout = TimeSpan.FromSeconds(15);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                _configuration["AI:Endpoint"] ?? "https://api.openai.com/v1/chat/completions");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
 
             var body = new
             {
@@ -42,50 +55,139 @@ public class AiService : IAiService
                 response_format = new { type = "json_object" },
                 messages = new object[]
                 {
-                    new { role = "system", content = "Classify the support ticket. Return JSON with category (Technical, Billing, Account, General), priority (Low, Medium, High), and a short summary." },
-                    new { role = "user", content = $"Subject: {subject}\nDescription: {description}" }
+                    new { role = "system", content = "Classify the support ticket. Return only JSON with category (Technical, Billing, Account, General), priority (Low, Medium, High), and a short summary." },
+                    new { role = "user", content = $"Subject:\n{subject}\n\nDescription:\n{description}" }
                 }
             };
 
-            var url = _configuration["AI:Endpoint"] ?? "https://api.openai.com/v1/chat/completions";
-            var json = JsonSerializer.Serialize(body);
-            var response = await client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+            request.Content = new StringContent(
+                JsonSerializer.Serialize(body),
+                Encoding.UTF8,
+                "application/json");
+
+            using var response = await client.SendAsync(request, cancellationToken);
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogWarning("AI service returned {StatusCode}", response.StatusCode);
-                return null;
+                var error = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogWarning("AI service returned {StatusCode}: {Error}", response.StatusCode, error);
+                return CreateFallbackClassification(subject, description);
             }
 
-            using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
-            var content = document.RootElement.GetProperty("choices")[0]
-                .GetProperty("message").GetProperty("content").GetString();
+            using var document = JsonDocument.Parse(
+                await response.Content.ReadAsStringAsync(cancellationToken));
 
-            if (string.IsNullOrWhiteSpace(content)) return null;
+            if (!document.RootElement.TryGetProperty("choices", out var choices) ||
+                choices.ValueKind != JsonValueKind.Array || choices.GetArrayLength() == 0)
+            {
+                _logger.LogWarning("AI response did not contain any choices.");
+                return CreateFallbackClassification(subject, description);
+            }
 
-            var result = JsonSerializer.Deserialize<AiResult>(content,
+            var message = choices[0].GetProperty("message");
+            var content = message.GetProperty("content").GetString();
+
+            if (string.IsNullOrWhiteSpace(content))
+                return CreateFallbackClassification(subject, description);
+
+            var jsonContent = ExtractJson(content);
+            var result = JsonSerializer.Deserialize<AiClassificationResponse>(
+                jsonContent,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            if (result == null) return null;
+            if (result == null)
+                return CreateFallbackClassification(subject, description);
 
-            var validCategories = Enum.GetNames<TicketCategory>();
-            var validPriorities = Enum.GetNames<TicketPriority>();
+            if (string.IsNullOrWhiteSpace(result.Summary) ||
+                !Enum.TryParse<TicketCategory>(result.Category, true, out var category) ||
+                !Enum.TryParse<TicketPriority>(result.Priority, true, out var priority))
+                return CreateFallbackClassification(subject, description);
 
-            if (!validCategories.Contains(result.Category, StringComparer.OrdinalIgnoreCase) ||
-                !validPriorities.Contains(result.Priority, StringComparer.OrdinalIgnoreCase) ||
-                string.IsNullOrWhiteSpace(result.Summary))
-                return null;
-
-            result.Category = validCategories.First(x => x.Equals(result.Category, StringComparison.OrdinalIgnoreCase));
-            result.Priority = validPriorities.First(x => x.Equals(result.Priority, StringComparison.OrdinalIgnoreCase));
+            result.Category = category.ToString();
+            result.Priority = priority.ToString();
             result.Summary = result.Summary.Trim();
 
             return result;
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            _logger.LogInformation("AI classification was cancelled.");
+            return CreateFallbackClassification(subject, description);
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogWarning(ex, "AI service returned invalid JSON.");
+            return CreateFallbackClassification(subject, description);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "AI classification failed");
-            return null;
+            return CreateFallbackClassification(subject, description);
         }
+    }
+
+    private static AiClassificationResponse CreateFallbackClassification(
+        string subject,
+        string description)
+    {
+        var text = $"{subject} {description}".ToLowerInvariant();
+
+        if (ContainsAny(text, "login", "log in", "password", "account", "sign in", "username"))
+        {
+            return new AiClassificationResponse
+            {
+                Category = TicketCategory.Account.ToString(),
+                Priority = TicketPriority.High.ToString(),
+                Summary = "Customer is unable to access their account."
+            };
+        }
+
+        if (ContainsAny(text, "payment", "billing", "invoice", "charge", "refund", "subscription"))
+        {
+            return new AiClassificationResponse
+            {
+                Category = TicketCategory.Billing.ToString(),
+                Priority = TicketPriority.High.ToString(),
+                Summary = "Customer is reporting a billing or payment problem."
+            };
+        }
+
+        if (ContainsAny(text, "error", "bug", "crash", "exception", "not working", "failed"))
+        {
+            return new AiClassificationResponse
+            {
+                Category = TicketCategory.Technical.ToString(),
+                Priority = TicketPriority.High.ToString(),
+                Summary = "Customer is reporting a technical problem."
+            };
+        }
+
+        return new AiClassificationResponse
+        {
+            Category = TicketCategory.General.ToString(),
+            Priority = TicketPriority.Medium.ToString(),
+            Summary = "Customer support request received."
+        };
+    }
+
+    private static bool ContainsAny(string value, params string[] terms)
+    {
+        return terms.Any(value.Contains);
+    }
+
+    private static string ExtractJson(string content)
+    {
+        var value = content.Trim();
+
+        if (value.StartsWith("```", StringComparison.Ordinal))
+        {
+            var firstLineEnd = value.IndexOf('\n');
+            var lastFence = value.LastIndexOf("```", StringComparison.Ordinal);
+
+            if (firstLineEnd >= 0 && lastFence > firstLineEnd)
+                value = value[(firstLineEnd + 1)..lastFence].Trim();
+        }
+
+        return value;
     }
 }

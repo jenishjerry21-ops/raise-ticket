@@ -432,12 +432,6 @@ For Vite environment configuration, an example is:
 VITE_API_URL=https://localhost:<BACKEND_PORT>/api
 ```
 
-Use the exact environment-variable name and API route structure implemented by the frontend.
-
-Do not commit private credentials in `.env` files.
-
-If an `.env` file is used, add it to `.gitignore`.
-
 ---
 
 #  11. Run the Complete Application
@@ -512,19 +506,6 @@ For a new laptop:
 | AI Model | `AI:Model` | Yes for AI |
 
 ---
-
-#  13. Do Not Commit Secrets
-
-Never commit these values to a public GitHub repository:
-
-```text
-Database passwords
-Database usernames
-JWT secrets
-OpenAI API keys
-Production credentials
-Admin passwords
-.env files containing secrets
 ```
 
 Use:

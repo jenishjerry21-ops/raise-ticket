@@ -184,12 +184,6 @@ The application reads the database connection from:
 ConnectionStrings:DefaultConnection
 ```
 
-## Recommended setup
-
-Do **not** put a real database username/password in a public GitHub repository.
-
-For local development, configure the connection string using **.NET User Secrets**.
-
 Navigate to the backend:
 
 ```bash
@@ -243,11 +237,6 @@ dotnet user-secrets set "Jwt:Issuer" "SmartDeskApi"
 
 Use a long, random secret for production.
 
-### Important
-
-Never commit a real JWT secret to GitHub.
-
----
 
 #  4. OpenAI / AI Configuration
 
@@ -290,8 +279,6 @@ If the default endpoint/model is being used, no additional configuration is requ
 
 ### Security
 
-**Never commit your OpenAI API key to GitHub.**
-
 The API key should be stored only in local/secure configuration.
 
 ---
@@ -329,8 +316,6 @@ During backend startup, the application runs the database migration and invokes 
 Therefore, the required database schema and seeded admin data can be initialized when the backend starts.
 
 If the application has an existing admin-login flow, use the credentials provided separately by the project owner/client administrator.
-
-**Do not store real admin passwords in this README.**
 
 ---
 
@@ -554,18 +539,6 @@ for sensitive configuration.
 
 #  14. Files That Should Not Be Pushed
 
-The following generated/local files should normally remain outside Git:
-
-```text
-.vs/
-bin/
-obj/
-node_modules/
-dist/
-.env
-.env.*
-```
-
 A typical `.gitignore` should include:
 
 ```gitignore
@@ -720,8 +693,6 @@ Jwt:Key
 Jwt:Issuer
 ```
 
-Make sure the same expected issuer and signing key are used when generating and validating tokens.
-
 ---
 
 ## OpenAI / AI error
@@ -734,8 +705,6 @@ AI:ApiKey
 AI:Endpoint
 AI:Model
 ```
-
-Make sure the OpenAI API key is valid and is available to the backend process.
 
 ---
 
@@ -848,38 +817,6 @@ Before production deployment:
 
 ---
 
-#  21. Screenshots
-
-Add screenshots of the application here if required.
-
-Recommended screenshots:
-
-```text
-Login
-Dashboard
-Ticket List
-Create Ticket
-Ticket Details
-Admin/Management Screen
-AI Classification Result
-```
-
-Example Markdown:
-
-```markdown
-![Login Screen](docs/screenshots/login.png)
-![Dashboard](docs/screenshots/dashboard.png)
-![Ticket List](docs/screenshots/ticket-list.png)
-```
-
----
-
-#  22. License
-
-This project is provided for project/assignment/client use.
-
-Add a formal open-source license if one is required for the project.
-
 ---
 
 #  Author
@@ -936,16 +873,4 @@ Then open the frontend URL shown by Vite.
 
 ---
 
-##  Important
 
-The GitHub repository should contain **source code and safe example configuration only**.
-
-Real:
-
-- SQL Server credentials
-- JWT secrets
-- OpenAI API keys
-- Admin passwords
-- Production credentials
-
-must be configured separately on the client's machine and must not be committed to the public repository.

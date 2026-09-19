@@ -507,20 +507,7 @@ For a new laptop:
 
 ---
 ```
-
-Use:
-
-- .NET User Secrets
-- Environment variables
-- Deployment/platform secret stores
-
-for sensitive configuration.
-
----
-
-#  14. Files That Should Not Be Pushed
-
-A typical `.gitignore` should include:
+# 12.A typical `.gitignore` should include:
 
 ```gitignore
 # Visual Studio
@@ -544,7 +531,7 @@ dist/
 
 ---
 
-#  15. Application Testing Checklist
+#  13. Application Testing Checklist
 
 After starting the application, verify:
 
@@ -584,7 +571,7 @@ If AI is enabled:
 
 ---
 
-#  16. Troubleshooting
+#  14. Troubleshooting
 
 ## Frontend does not start
 
@@ -689,7 +676,7 @@ AI:Model
 
 ---
 
-#  17. Frontend Commands
+#  15. Frontend Commands
 
 From the repository root:
 
@@ -723,7 +710,7 @@ npm run preview
 
 ---
 
-#  18. Backend Commands
+#  16. Backend Commands
 
 From `Tickets-sd`:
 
@@ -747,7 +734,7 @@ dotnet tool install --global dotnet-ef
 
 ---
 
-#  19. Git Workflow
+#  17. Git Workflow
 
 Use meaningful commits while developing.
 
@@ -782,7 +769,7 @@ final project
 
 ---
 
-#  20. Production Security Notes
+#  18. Production Security Notes
 
 Before production deployment:
 
